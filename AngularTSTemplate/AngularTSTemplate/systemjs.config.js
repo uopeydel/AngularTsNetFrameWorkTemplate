@@ -43,7 +43,8 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
             '@angular/upgrade': 'npm:@angular/upgrade/bundles/upgrade.umd.js',
             '@angular/upgrade/static': 'npm:@angular/upgrade/bundles/upgrade-static.umd.js',
-             
+            
+            'angular-2-local-storage': 'npm:angular-2-local-storage',
             'angular2-infinite-scroll': 'npm:angular2-infinite-scroll',
             // other libraries
             //'HammerJS': 'npm:hammerjs/hammer.js',
@@ -63,6 +64,10 @@
             },
             'angular2-infinite-scroll': { 
                 main: 'angular2-infinite-scroll.js',
+                defaultExtension: 'js'
+            },
+            'angular-2-local-storage': {
+                main: 'dist/index.js',
                 defaultExtension: 'js'
             }
         }

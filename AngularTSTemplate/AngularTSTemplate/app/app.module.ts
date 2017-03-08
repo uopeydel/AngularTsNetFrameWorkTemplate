@@ -5,6 +5,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
+import { LocalStorageModule } from 'angular-2-local-storage';
+
+
 // <<< ---  Material 2  --- >>>
 import '../node_modules/hammerjs/hammer.js';
 import { MaterialModule } from '@angular/material';
@@ -48,6 +51,8 @@ const APP_PROVIDERS = [
         HttpModule,
         JsonpModule,
         InfiniteScrollModule,
+        LocalStorageModule.withConfig({ prefix: 'kj-app',  storageType: 'localStorage' }),
+        //LocalStorageModule.withConfig({ storageType: 'localStorage' }),
         MaterialModule.forRoot()
     ],
     declarations: [
