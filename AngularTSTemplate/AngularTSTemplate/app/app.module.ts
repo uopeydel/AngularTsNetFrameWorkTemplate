@@ -15,27 +15,27 @@ import { MaterialModule } from '@angular/material';
 // <<< ---  MAIN  --->>>
 import { AppComponent } from './app.component';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
-import { AppRoutes } from '../app/app.routes';
+import { AppRoutes } from '../App/app.routes';
 
 // <<< ------- # Pipe # ------- >>>
-import * as _pipe from '../app/Pipe/Global.pipe';
+import * as _pipe from '../App/Pipe/Global.pipe';
 
 // <<< ------- Route PAGE ------- >>>
-import { LoginComponent } from '../app/Login/Login.component';
-import { TestPageComponent } from '../app/TestPage/TestPage.component';
-import { PageNotFoundComponent } from '../app/PageNotFound/PageNotFound.component';
+import { LoginComponent } from '../App/Login/Login.component';
+import { TestPageComponent } from '../App/TestPage/TestPage.component';
+import { PageNotFoundComponent } from '../App/PageNotFound/PageNotFound.component';
 
 // <<< ------- Route PAGE ListManager------- >>>
-import { AddNewORGComponent } from '../app/ListManager/AddNewORG/AddNewORG.component';
+import { AddNewORGComponent } from '../App/ListManager/AddNewORG/AddNewORG.component';
 
 
 // <<< ------- Route PAGE ListManager------- >>> #POPUP
-import { AddNewMemberComponent } from '../app/ListManager/AddNewORG/AddNewMember/AddNewMember.component';
-import { AddOldMemberComponent } from '../app/ListManager/AddNewORG/AddOldMember/AddOldMember.component';
+import { AddNewMemberComponent } from '../App/ListManager/AddNewORG/AddNewMember/AddNewMember.component';
+import { AddOldMemberComponent } from '../App/ListManager/AddNewORG/AddOldMember/AddOldMember.component';
 
 
 // <<< ------- Route PAGE ListManager------- >>> #Service
-import { AddNewORGService } from '../app/ListManager/AddNewORG/AddNewORG.service';
+import { AddNewORGService } from '../App/ListManager/AddNewORG/AddNewORG.service';
 
 
 const APP_PROVIDERS = [
