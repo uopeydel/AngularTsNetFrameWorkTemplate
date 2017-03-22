@@ -8,8 +8,11 @@ import 'rxjs/add/operator/startWith';
 import * as _ from 'underscore';
 import * as moment from 'moment';
 
+import { LocalStorageService } from 'angular-2-local-storage';
 
-import * as config from 'angular2-infinite-scroll';
+import { ConfigurationService } from '../Configuration/Configuration.service';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { authInterceptorService } from '../../app/TESTauth';
 
 @Component({
     selector: 'TestPage',
@@ -58,8 +61,21 @@ export class TestPageComponent implements OnInit {
         return val ? this.states.filter((s) => new RegExp(val, 'gi').test(s.namex + s.lastnamex)) : this.states;
     }
 
-    constructor(public dialog: MdDialog) {
+    constructor(
+        private dialog: MdDialog,
+        private http: Http,
+        private config: ConfigurationService,
+        private AuthService: authInterceptorService,
+        private aaa: LocalStorageService
+    ) {
 
+
+
+
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let options = new RequestOptions({ headers: headers });
+
+         
         this.projectCtrl = new FormControl();
         this.projectCtrl.setValue('asdw starter value');
         this.filteredProjects = this.projectCtrl.valueChanges
@@ -76,9 +92,26 @@ export class TestPageComponent implements OnInit {
 
 
     }
-    public ngOnInit() {
-
+     
+    public ngOnInit() {  
+        
+        console.log(this.aaa.get('asd'));
+        this.call()
+            .subscribe(data => {
+                console.log('data   : ', data);
+            }, error => {
+                console.log(error);
+            });
     }
+
+    public call() {// //test builk auth
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let options = new RequestOptions({ headers: headers });
+        let objJson: string = JSON.stringify({ 'objJson': 'qwe' });
+        let apiroot = 'api/testpost';
+        return this.AuthService.post(apiroot, objJson, options).map(res => res.json());
+    };
+
     //################################## Project Projects   project projects
     //################################## / แก้ เม้าอยู่ตัวสุดท้าย แต่ถ้าพิมไปแล้วจะไม่ฟิลเตอร
 

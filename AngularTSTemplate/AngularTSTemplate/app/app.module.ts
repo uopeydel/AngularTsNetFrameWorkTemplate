@@ -3,9 +3,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpModule, JsonpModule, RequestOptions, XHRBackend  } from '@angular/http';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
-import { LocalStorageModule } from 'angular-2-local-storage';
+import { LocalStorageModule ,LocalStorageService } from 'angular-2-local-storage';
 
 
 // <<< ---  Material 2  --- >>>
@@ -16,6 +16,8 @@ import { MaterialModule } from '@angular/material';
 import { AppComponent } from './app.component';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { AppRoutes } from '../App/app.routes';
+
+import { authInterceptorService} from '../app/TESTauth';
 
 // <<< ------- # Pipe # ------- >>>
 import * as _pipe from '../App/Pipe/Global.pipe';
@@ -41,6 +43,14 @@ import { AddNewORGService } from '../App/ListManager/AddNewORG/AddNewORG.service
 const APP_PROVIDERS = [
     AddNewORGService
 ];
+
+const AUTH_PROVIDERS = {
+    provide: authInterceptorService,
+    useFactory: (backend: XHRBackend, options: RequestOptions, LocalStorageSrv: LocalStorageService) => {
+        return new authInterceptorService(backend, options, LocalStorageSrv);
+    },
+    deps: [XHRBackend, RequestOptions, LocalStorageService]
+};
 
 @NgModule({
     imports: [
@@ -78,8 +88,9 @@ const APP_PROVIDERS = [
     bootstrap: [
         AppComponent 
     ],
-    providers: [ // expose our Services and Providers into Angular's dependency injection 
-        APP_PROVIDERS
+    providers: [  
+        APP_PROVIDERS, // expose our Services and Providers into Angular's dependency injection 
+        AUTH_PROVIDERS //
     ]
 })
 export class AppModule { }
