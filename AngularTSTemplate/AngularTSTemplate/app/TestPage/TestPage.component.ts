@@ -10,9 +10,8 @@ import * as moment from 'moment';
 
 import { LocalStorageService } from 'angular-2-local-storage';
 
-import { ConfigurationService } from '../Configuration/Configuration.service';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { authInterceptorService } from '../../app/TESTauth';
+import { authInterceptorService } from '../../App/TESTauth';
 
 @Component({
     selector: 'TestPage',
@@ -64,7 +63,7 @@ export class TestPageComponent implements OnInit {
     constructor(
         private dialog: MdDialog,
         private http: Http,
-        private config: ConfigurationService,
+       
         private AuthService: authInterceptorService,
         private aaa: LocalStorageService
     ) {

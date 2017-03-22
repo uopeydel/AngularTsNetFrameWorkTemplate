@@ -17,7 +17,7 @@ import { AppComponent } from './app.component';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { AppRoutes } from '../App/app.routes';
 
-import { authInterceptorService} from '../app/TESTauth';
+import { authInterceptorService} from '../App/TESTauth';
 
 // <<< ------- # Pipe # ------- >>>
 import * as _pipe from '../App/Pipe/Global.pipe';

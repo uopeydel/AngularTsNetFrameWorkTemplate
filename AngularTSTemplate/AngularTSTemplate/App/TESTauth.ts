@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import { ConfigurationService } from './Configuration/Configuration.service';
+
 
 import { /*PlatformLocation,*/ Location } from '@angular/common';
 //import { ActivatedRoute,  } from '@angular/router';
@@ -28,22 +28,20 @@ function TEST_auth_initial(conf: any) {
 export class TESTAuthSrv {
     constructor(
         private http: Http,
-        private location: Location,
-        private config: ConfigurationService/*,
-        private localStorageService: LocalStorageService*/
+        private location: Location
     ) {
         
     }
    
 
     login() {
-        this.logOut();
-        var obj = {
-            redirectURI: encodeURIComponent(this.config.root + this.location.prepareExternalUrl(this.location.path())),
-            client_id: get_TEST_auth().client_id
-        };
-        var jsonObject = JSON.stringify(obj);
-        window.open('https://[link]authapp.on.[link]/#/login?params=' + jsonObject, '_self');
+        //this.logOut();
+        //var obj = {
+        //    redirectURI: encodeURIComponent(this.config.root + this.location.prepareExternalUrl(this.location.path())),
+        //    client_id: get_TEST_auth().client_id
+        //};
+        //var jsonObject = JSON.stringify(obj);
+        //window.open('https://[link]authapp.on.[link]/#/login?params=' + jsonObject, '_self');
     }
     logOut() {
         //this.localStorageService.remove('authorizationData'); 
