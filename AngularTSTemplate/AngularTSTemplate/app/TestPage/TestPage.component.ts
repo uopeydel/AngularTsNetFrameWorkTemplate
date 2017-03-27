@@ -25,6 +25,7 @@ import { authInterceptorService } from '../../App/TESTauth';
 })
 
 export class TestPageComponent implements OnInit {
+    //document.cookie = 'test01=value01;expires=' + moment('2039-02-20').toDate() + ';';
     openDialog() {
         console.log(this.projectCtrl.value);
         //console.log(moment('2016-01-01'));
