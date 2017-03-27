@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule, RequestOptions, XHRBackend  } from '@angular/http';
 import { InfiniteScrollModule } from 'angular2-infinite-scroll';
 import { LocalStorageModule ,LocalStorageService } from 'angular-2-local-storage';
+import { CookieService } from 'angular2-cookie/services/cookies.service';
 
 
 // <<< ---  Material 2  --- >>>

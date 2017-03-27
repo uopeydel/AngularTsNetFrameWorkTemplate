@@ -45,6 +45,7 @@
             '@angular/upgrade/static': 'npm:@angular/upgrade/bundles/upgrade-static.umd.js',
             
             'angular-2-local-storage': 'npm:angular-2-local-storage',
+            'angular2-cookie': 'npm:angular2-cookie',
             'angular2-infinite-scroll': 'npm:angular2-infinite-scroll',
             // other libraries
             //'HammerJS': 'npm:hammerjs/hammer.js',
@@ -68,6 +69,10 @@
             },
             'angular-2-local-storage': {
                 main: 'dist/index.js',
+                defaultExtension: 'js'
+            },
+            'angular2-cookie': {
+                main: './core.js',
                 defaultExtension: 'js'
             }
         }
