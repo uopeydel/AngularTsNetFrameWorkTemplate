@@ -1,63 +1,108 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions,  ConnectionBackend, RequestOptionsArgs, Request, Response } from '@angular/http';
+import { Http, Headers, RequestOptions, ConnectionBackend, RequestOptionsArgs, Request, Response, URLSearchParams } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-//import { Subscriber } from 'rxjs/Subscriber';
+import { Location } from '@angular/common';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
 
-
-import { /*PlatformLocation,*/ Location } from '@angular/common';
-//import { ActivatedRoute,  } from '@angular/router';
-import { LocalStorageService } from 'angular-2-local-storage';
-
-
-let TEST_auth_conf : any = {
-    client_id: ""
-} as any;
-
-function get_TEST_auth(): any {
-    return TEST_auth_conf;
+//#
+const conf_auth = {
+    client_id: '',
+    resource_servers: [''],
+    auth_server: '',
+    localStorageName: ''
 };
 
-function TEST_auth_initial(conf: any) {
-    TEST_auth_conf = conf;
+function get_conf_auth() {
+    return conf_auth;
 };
 
+function set_conf_auth(client_id: string, resource_servers: string[], auth_server: string, localStorageName: string): void {
+    conf_auth.client_id = client_id;
+    conf_auth.resource_servers = resource_servers;
+    conf_auth.auth_server = auth_server;
+    conf_auth.localStorageName = localStorageName;
+};
+
+//#
+const auth_data = {
+    access_token: '',
+    refresh_token: '',
+    grant_type: ''
+};
+
+function get_auth_data() {
+    return auth_data;
+}
+
+function set_auth_data(access_token: string, refresh_token: string, grant_type: string): void {
+    auth_data.access_token = access_token;
+    auth_data.refresh_token = refresh_token;
+    auth_data.grant_type = grant_type;
+}
+
+//#
 @Injectable()
-export class TESTAuthSrv {
+export class buicomAuthSrv {
     constructor(
-        private http: Http,
-        private location: Location
+        private location: Location,
+        private http: Http
     ) {
-        
+
     }
-   
+    //NEED SET CONFIG FIRST
+    setconfig(client_id: string, resource_servers: string[], auth_server: string, localStorageName: string): void {
+        set_conf_auth(client_id, resource_servers, auth_server, localStorageName);
+    }
+
+    weblogin(username: string, password: string, grant_type: string) {
+        set_auth_data(get_auth_data().access_token, get_auth_data().refresh_token, grant_type);
+        let url = get_conf_auth().auth_server;
+        let data = "?grant_type=" + grant_type +
+            "&username=" + username +
+            "&password=" + password +
+            "&client_id=" + get_conf_auth().client_id;
+        let apiroot = url + data;
+        let body = new URLSearchParams(url);
+        body.set("grant_type", grant_type);
+        body.set("username", username);
+        body.set("password", password);
+        body.set("client_id", get_conf_auth().client_id);
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(apiroot, body, options).map(res => res.json());
+    }
 
     login() {
-        //this.logOut();
-        //var obj = {
-        //    redirectURI: encodeURIComponent(this.config.root + this.location.prepareExternalUrl(this.location.path())),
-        //    client_id: get_TEST_auth().client_id
-        //};
-        //var jsonObject = JSON.stringify(obj);
-        //window.open('https://[link]authapp.on.[link]/#/login?params=' + jsonObject, '_self');
+        this.logOut();
+        var obj = {
+            redirectURI: encodeURIComponent(window.location.origin + this.location.prepareExternalUrl(this.location.path())),
+            client_id: get_conf_auth().client_id
+        };
+        var jsonObject = JSON.stringify(obj);
+        window.open('https://comauthapp.com/#/login?params=' + jsonObject, '_self');
     }
+
     logOut() {
-        //this.localStorageService.remove('authorizationData'); 
+        window.localStorage.removeItem(get_conf_auth().localStorageName);
+        location.reload(true);
     }
+
     getCurrentUser() {
-        //var authData = this.localStorageService.get('authorizationData');
-        //if (authData) {
-        //    return authData;
-        //} else {
-        //    return null;
-        //}
+        var authData = window.localStorage.getItem(get_conf_auth().localStorageName);
+        if (authData) {
+            return authData;
+        } else {
+            return null;
+        }
     }
+
     getUserProfile() {
         let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
         let options = new RequestOptions({ headers: headers });
-        let apiroot = 'https://[link]]resserver.on.[link]/api/profile/get';
+        let apiroot = 'https://comresserver.com/api/profile/get';
         return this.http.get(apiroot, options).map(res => res.json());
     }
 }
@@ -66,90 +111,114 @@ export class TESTAuthSrv {
 export class authInterceptorService extends Http {
     constructor(
         private backend: ConnectionBackend,
-        private defaultOptions: RequestOptions,
-        private LocalStorageSrv: LocalStorageService
+        private defaultOptions: RequestOptions
     ) {
-        super(backend, defaultOptions);  
-        
-    }  
+        super(backend, defaultOptions);
+    }
+    private tempLastActivity = {
+        url: '',
+        options: null as any,
+        body: null as any
+    }
 
-    request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
-        TEST_auth_initial({ client_id: "asd" });
-        console.log(get_TEST_auth());
-        this.LocalStorageSrv.set('aaq' , '123456');
-        console.log(this.LocalStorageSrv.get('aaq'));
-        let authData: any ='asd';// = this.localStorageServ.get('asd');// this.localStorageService.get('authorizationData');
-        if (authData !== null) {
-            console.log('authData => ', authData);
-            console.log('url => ', url);
-            console.log('options => ', options);
-            //let usingTESTAuthToken = false;
-            //for (var i = 0; i < this.mainAuthSrv.get_TEST_auth().resource_servers.length; i++) {
-            //    if (url.split('/')[2] === this.mainAuthSrv.get_TEST_auth().resource_servers[i]) {
-            //        usingTESTAuthToken = true;
-            //    }
-            //}
-            //if (url.split('/')[2] === "[link]authserver.on.[link]") {
+    post(url: string, body: string | URLSearchParams, options?: RequestOptionsArgs): Observable<Response> {
+        let authorizationData: any = JSON.parse(window.localStorage.getItem(get_conf_auth().localStorageName));
+        if (authorizationData !== null || authorizationData !== undefined) {
+            set_auth_data(authorizationData.access_token, authorizationData.refresh_token, get_auth_data().grant_type);
+            let usingBuicomAuthToken = false;
+            for (var i = 0; i < get_conf_auth().resource_servers.length; i++) {
+                let resourceServers = get_conf_auth().resource_servers[i];
+                let requestServer = url.split('/')[2];
+                let testurl002 = url;
+                if (requestServer === resourceServers) {
+                    usingBuicomAuthToken = true;
+                }
+            }
+            if (url.toString().split('/')[2] === "comauthserver.com") {
+                if (get_auth_data().grant_type == 'refresh_token') {
+                    //<=it's  refresh tokens
+                    let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+                    options = new RequestOptions({ headers: headers });
+                    body = new URLSearchParams(get_conf_auth().auth_server);
+                    body.set('client_id', get_conf_auth().client_id);
+                    body.set('grant_type', get_auth_data().grant_type);
+                    body.set('refresh_token', get_auth_data().refresh_token);
+                    url = get_conf_auth().auth_server +
+                        '?refresh_token=' + get_auth_data().refresh_token +
+                        "&client_id=" + get_conf_auth().client_id +
+                        "&grant_type=" + get_auth_data().grant_type;
+                }
+                else if (get_auth_data().grant_type == 'password') {
+                    //<=it's  login
 
-            //} else if (usingTESTAuthToken) {
-            //    options.headers.Authorization = 'Bearer ' + authData.token;
-            //}
+                } else {
+                    throw 'grant_type wrong';
+                }
+            } else if (usingBuicomAuthToken) {
+                let head = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+                head.set('Authorization', `Bearer ${get_auth_data().access_token}`);
+                options = new RequestOptions({ headers: head });
+
+                this.tempLastActivity.body = body;
+                this.tempLastActivity.url = url;
+                this.tempLastActivity.options = options;
+            }
+            return super.post(url, body, options).catch((error) => this.catchAuthError(error));
         }
         else {
-            console.log('null');
+            throw "not authenticated";
         }
-        return super.request(url, options).catch(this.catchAuthError(this));
     }
 
-    private catchAuthError(self: authInterceptorService) {
-        return (res: Response) => {
-            console.log(res);
-            if (res.status === 401 || res.status === 403) {
-                // if not authenticated
-                console.log('not authenticated', res);
-            }
-            return Observable.throw(res);
-        };
+    private getRequestOptionArgs(options?: RequestOptionsArgs): RequestOptionsArgs {
+        if (options == null) {
+            options = new RequestOptions();
+        }
+        if (options.headers == null) {
+            options.headers = new Headers();
+        }
+        options.headers.append('Content-Type', 'application/json');
+        return options;
     }
 
-    public responseError(rejection: any) {
-        let authData: any;// = this.localStorageService.get('authorizationData');
-        if (rejection.status === 401) {
+    private catchAuthError(res: Response): Observable<Response> {
+        let authData: any = window.localStorage.getItem(get_conf_auth().localStorageName);
+        if (res.status === 401 || res.status === 403) {
             if (authData !== null) {
-                var usingTESTAuthToken = false;
-                for (var i = 0; i < get_TEST_auth().resource_servers.length; i++) {
-                    if (rejection.config.url.split('/')[2] === get_TEST_auth().resource_servers[i]) {
-                        usingTESTAuthToken = true;
+                var usingBuicomAuthToken = false;
+                for (var i = 0; i < get_conf_auth().resource_servers.length; i++) {
+                    if (res.url.split('/')[2] === get_conf_auth().resource_servers[i]) {
+                        usingBuicomAuthToken = true;
                     }
                 }
-                if (usingTESTAuthToken) {
-                    this.requestAccessToken({
-                        refresh_token: authData.refreshToken,
-                        grant_type: 'refresh_token',
-                        client_id: get_TEST_auth().client_id
-                    }).subscribe(data => {
-                        console.log(data);
-                        //this.localStorageServ.set('authorizationData', {
-                        //    token: data.access_token,
-                        //    userName: authData.userName,
-                        //    refreshToken: data.refresh_token,
-                        //    useRefreshTokens: true
-                        //});
-                        location.reload(true);
-                    }, error => {
-                        console.log(error);
-                    });
+                if (usingBuicomAuthToken) {
+                    return this.requestAccessToken().
+                        flatMap((datas) => {
+                            window.localStorage.setItem(get_conf_auth().localStorageName, JSON.stringify({
+                                access_token: datas.access_token,
+                                refresh_token: datas.refresh_token
+                            }));
+                            set_auth_data(datas.access_token, datas.refresh_token, get_auth_data().grant_type);
+                            let head = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+                            head.set('Authorization', `Bearer ${get_auth_data().access_token}`);
+                            this.tempLastActivity.options = new RequestOptions({ headers: head });
+                            return super.post(
+                                this.tempLastActivity.url,
+                                this.tempLastActivity.body,
+                                this.tempLastActivity.options
+                            ).catch((error) => this.catchAuthError(error)).map(res => res);
+                        })
                 }
+            }
+            else {
+                location.reload(true);
+                return Observable.throw(res);
             }
         }
     }
-    public requestAccessToken(obj: any) { 
-        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
-        let options = new RequestOptions({ headers: headers });
-        let objJson: string = JSON.stringify(obj);
-        let apiroot = 'https://[link]authserver.on.[link]/oauth2/token';
-        return this.post(apiroot, objJson, options).map(res => res.json());
+
+    private requestAccessToken() {
+        set_auth_data(get_auth_data().access_token, get_auth_data().refresh_token, 'refresh_token');
+        return this.post(get_conf_auth().auth_server, null, null).map(res => res.json());
     }
-
 }
-
