@@ -17,6 +17,7 @@ import { MaterialModule } from '@angular/material';
 import { AppComponent } from './app.component';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { AppRoutes } from '../App/app.routes';
+import { HashLocationStrategy, LocationStrategy, APP_BASE_HREF } from '@angular/common';
 
 import { authInterceptorService} from '../App/TESTauth';
 
@@ -47,10 +48,10 @@ const APP_PROVIDERS = [
 
 const AUTH_PROVIDERS = {
     provide: authInterceptorService,
-    useFactory: (backend: XHRBackend, options: RequestOptions, LocalStorageSrv: LocalStorageService) => {
-        return new authInterceptorService(backend, options, LocalStorageSrv);
+    useFactory: (backend: XHRBackend, options: RequestOptions ) => {
+        return new authInterceptorService(backend, options);
     },
-    deps: [XHRBackend, RequestOptions, LocalStorageService]
+    deps: [XHRBackend, RequestOptions]
 };
 
 @NgModule({
@@ -90,6 +91,8 @@ const AUTH_PROVIDERS = {
         AppComponent 
     ],
     providers: [  
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        { provide: APP_BASE_HREF, useValue: '!' },
         APP_PROVIDERS, // expose our Services and Providers into Angular's dependency injection 
         AUTH_PROVIDERS //
     ]
